@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
                  &clilen);
                  
      if (newsockfd < 0) {
-          error("ERROR on accept");
+        error("ERROR on accept");
      }
      
      bzero(buffer,256);
