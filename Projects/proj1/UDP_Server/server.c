@@ -12,36 +12,40 @@
 #include <string.h>
 #include <unistd.h>
 
+
+#define MESSAGE_SIZE 100 // Longest string to echo 
+#define NUM_USERS 10 // number of users in the messaging system
+
 typedef struct sockaddr_in sockaddr_in;
+
 typedef struct {
     enum {
         Login, Notify, Logout
     } message_Type; // same size as an unsigned int
     unsigned int ClientId; // unique client identifier
-} NotifyMessage;
+} NotifyMessage; // an unsigned int is 32 bits = 4 bytes
 
 typedef struct {
-
     enum {
         Send, Retrieve
     } request_Type; // same size as an unsigned int 
     unsigned int SenderId; // unique client identifier 
     unsigned int RecipientId; // unique client identifier 
-    char message[100]; // text message
-} ClientMessage;  // an unsigned int is 32 bits = 4 bytes 
+    char message[MESSAGE_SIZE]; // text message
+} ClientMessage; // an unsigned int is 32 bits = 4 bytes 
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-    int sock;                        /* Socket */
+    int sock; /* Socket */
     struct sockaddr_in echoServAddr; /* Local address */
     struct sockaddr_in echoClntAddr; /* Client address */
-    unsigned int cliAddrLen;         /* Length of incoming message */
-    char echoBuffer[ECHOMAX];        /* Buffer for echo string */
-    unsigned short echoServPort;     /* Server port */
-    int recvMsgSize;                 /* Size of received message */
-    
+    unsigned int cliAddrLen; /* Length of incoming message */
+    char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
+    unsigned short echoServPort; /* Server port */
+    int recvMsgSize; /* Size of received message */
+
     return (EXIT_SUCCESS);
 }
 
