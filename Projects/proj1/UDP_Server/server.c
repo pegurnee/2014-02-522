@@ -19,6 +19,7 @@
 typedef struct sockaddr_in sockaddr_in;
 
 typedef struct {
+
     enum {
         Login, Notify, Logout
     } message_Type; // same size as an unsigned int
@@ -26,6 +27,7 @@ typedef struct {
 } NotifyMessage; // an unsigned int is 32 bits = 4 bytes
 
 typedef struct {
+
     enum {
         Send, Retrieve
     } request_Type; // same size as an unsigned int 
@@ -33,6 +35,16 @@ typedef struct {
     unsigned int RecipientId; // unique client identifier 
     char message[MESSAGE_SIZE]; // text message
 } ClientMessage; // an unsigned int is 32 bits = 4 bytes 
+
+typedef struct {
+
+    enum {
+        New, Old, No_Message
+    } messageType; // same size as an unsigned int
+    unsigned int SenderId; //unique client identifier 
+    unsigned int RecipientId; // unique client identifier
+    char message[MESSAGE_SIZE]; // text message
+} ServerMessage; // an unsigned int is 32 bits = 4 bytes
 
 /*
  * 
