@@ -12,8 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 
-
-#define MESSAGE_SIZE 100 // Longest string to echo 
+#define MESSAGE_SIZE 100 // Longest size of any message
 #define NUM_USERS 10 // number of users in the messaging system
 
 typedef struct sockaddr_in sockaddr_in;
@@ -58,6 +57,17 @@ int main(int argc, char** argv) {
     unsigned short echoServPort; /* Server port */
     int recvMsgSize; /* Size of received message */
 
+    //check parameters, just port number (24564)
+    
+    //create socket
+    
+    //create the address structure
+    
+    //bind() to the address
+    
+    //main looping
+    //1. login, check password
+    //2. 
     return (EXIT_SUCCESS);
 }
 
