@@ -66,9 +66,11 @@ int main(int argc, char** argv) {
     //bind() to the address
     
     //main looping
-    //needs two threads, one to maintain the login and notifications thereof
+    //needs THREE threads, one to maintain the login and notifications thereof
     
-    //and one to send and receive messages
+    //one to send and receive messages (MAIN PROGRAM)
+    
+    //and one to allow the server to gracefully exit
     
     return (EXIT_SUCCESS);
 }
