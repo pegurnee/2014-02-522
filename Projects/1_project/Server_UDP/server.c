@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     unsigned short echoServPort; /* Server port */
     int recvMsgSize; /* Size of received message */
 
-    //check parameters, just port number (24564)
+    //check parameters, just port number, defaults to 24564
     
     //create socket
     
@@ -66,8 +66,10 @@ int main(int argc, char** argv) {
     //bind() to the address
     
     //main looping
-    //1. login, check password
-    //2. 
+    //needs two threads, one to maintain the login and notifications thereof
+    
+    //and one to send and receive messages
+    
     return (EXIT_SUCCESS);
 }
 
