@@ -24,3 +24,5 @@
 
 *.DS_Store
 *.~lock.*
+/Projects/1_project/Server_UDP/dist/
+/Projects/1_project/Server_UDP/build/
