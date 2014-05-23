@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-MacOSX
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-MacOSX
-CND_ARTIFACT_NAME_Debug=udp_server
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-MacOSX/udp_server
+CND_ARTIFACT_NAME_Debug=server_udp
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-MacOSX/server_udp
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-MacOSX/package
-CND_PACKAGE_NAME_Debug=udpserver.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/udpserver.tar
+CND_PACKAGE_NAME_Debug=serverudp.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/serverudp.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-MacOSX
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-MacOSX
-CND_ARTIFACT_NAME_Release=udp_server
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-MacOSX/udp_server
+CND_ARTIFACT_NAME_Release=server_udp
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-MacOSX/server_udp
 CND_PACKAGE_DIR_Release=dist/Release/GNU-MacOSX/package
-CND_PACKAGE_NAME_Release=udpserver.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/udpserver.tar
+CND_PACKAGE_NAME_Release=serverudp.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/serverudp.tar
 #
 # include compiler specific variables
 #
