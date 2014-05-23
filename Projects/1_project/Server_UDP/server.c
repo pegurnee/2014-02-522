@@ -56,7 +56,8 @@ int main(int argc, char** argv) {
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
     unsigned short echoServPort; /* Server port */
     int recvMsgSize; /* Size of received message */
-
+    char cmd[4];
+    
     //check parameters, just port number, defaults to 24564
     
     //create socket
@@ -71,6 +72,15 @@ int main(int argc, char** argv) {
     //one to send and receive messages (MAIN PROGRAM)
     
     //and one to allow the server to gracefully exit
+    for(;;) {
+        fgets(cmd, 100, stdin);
+        cmd[strlen(cmd) - 1] = '\0';
+        if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
+            printf("Connection Closed.\n");
+            return (EXIT_SUCCESS);
+        }
+        printf("Invalid Command.\n");
+    }
     
     return (EXIT_SUCCESS);
 }
