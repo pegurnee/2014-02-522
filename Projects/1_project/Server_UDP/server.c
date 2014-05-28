@@ -58,8 +58,8 @@ void dieWithError(char *errorMessage) {
  * 
  */
 int main(int argc, char** argv) {
-    char *cmd;
-    char *pNum;
+    char cmd[99];
+    char pNum[5];
     char confirm;
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
@@ -78,8 +78,8 @@ int main(int argc, char** argv) {
             serverPort = DEFAULT_PORT;
         } else {
             puts("Enter 5-digit port number (between 20000-30000): ");
-            scanf("%s", &pNum);
-            serverPort = atoi(&pNum);
+            scanf("%s", pNum);
+            serverPort = atoi(pNum);
         }
     } else {
         serverPort = atoi(argv[1]);
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     if ((theSocket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
         dieWithError("socket() failed");
     }
-
+    
     //create the address structure
     memset(&theServerAddress, 
             0, 
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     //one to send and receive messages (MAIN PROGRAM)
 
     //and one to allow the server to gracefully exit
-    *cmd = "first";
+    //*cmd = "first";
     for (;;) {
         fgets(cmd, 100, stdin);
         //scanf("%s", &cmd);
