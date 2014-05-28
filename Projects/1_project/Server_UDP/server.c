@@ -101,6 +101,11 @@ int main(int argc, char** argv) {
     theServerAddress.sin_port = htons(serverPort); /* Local port */
 
     //bind() to the address
+    if (bind(theSocket,
+            (struct sockaddr *) &theServerAddress,
+            sizeof (theServerAddress)) < 0) {
+        dieWithError("bind() failed");
+    }
 
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
