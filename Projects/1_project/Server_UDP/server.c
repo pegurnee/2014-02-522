@@ -58,9 +58,9 @@ void dieWithError(char *errorMessage) {
  * 
  */
 int main(int argc, char** argv) {
-    char cmd[99];
-    char pNum[5];
-    char confirm;
+    char cmd[99]; //whatever the user types in after the server starts
+    char pNum[5]; //used to set a user defined port
+    char confirm; //used to confirm the default port
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
     struct sockaddr_in theServerAddress; /* Local address */
@@ -109,8 +109,11 @@ int main(int argc, char** argv) {
 
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
-
+    
     //one to send and receive messages (MAIN PROGRAM)
+    for (;;) {
+        
+    }
 
     //and one to allow the server to gracefully exit
     //*cmd = "first";
