@@ -64,7 +64,8 @@ int main(int argc, char** argv) {
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
     struct sockaddr_in theServerAddress; /* Local address */
-
+    ClientMessage currentMessage;
+    
     struct sockaddr_in echoClntAddr; /* Client address */
     unsigned int cliAddrLen; /* Length of incoming message */
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
@@ -112,6 +113,12 @@ int main(int argc, char** argv) {
     
     //one to send and receive messages (MAIN PROGRAM)
     for (;;) {
+        cliAddrLen = sizeof(echoClntAddr);
+        
+        /* Block until receive message from a client */
+        if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
+                                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
+            dieWithError("recvfrom() failed");
         
     }
 
