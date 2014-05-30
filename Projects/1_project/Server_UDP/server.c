@@ -65,7 +65,9 @@ int main(int argc, char** argv) {
     int theSocket; /* Socket */
     struct sockaddr_in theServerAddress; /* Local address */
     ClientMessage currentMessage;
-    
+
+    pid_t processID;
+
     struct sockaddr_in echoClntAddr; /* Client address */
     unsigned int cliAddrLen; /* Length of incoming message */
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
@@ -92,10 +94,10 @@ int main(int argc, char** argv) {
     if ((theSocket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
         dieWithError("socket() failed");
     }
-    
+
     //create the address structure
-    memset(&theServerAddress, 
-            0, 
+    memset(&theServerAddress,
+            0,
             sizeof (theServerAddress)); /* Zero out structure */
     theServerAddress.sin_family = AF_INET; /* Internet address family */
     theServerAddress.sin_addr.s_addr = htonl(INADDR_ANY); /* Any incoming interface */
@@ -110,32 +112,35 @@ int main(int argc, char** argv) {
 
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
-    
-    //one to send and receive messages (MAIN PROGRAM)
-    for (;;) {
-        cliAddrLen = sizeof(echoClntAddr);
-        
-        /* Block until receive message from a client */
-        if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
-                                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
-            dieWithError("recvfrom() failed");
-        
-    }
+    if ((processID = fork()) > 0) { //parent process
+        //one to send and receive messages (MAIN PROGRAM)
+        for (;;) {
+            cliAddrLen = sizeof (echoClntAddr);
 
-    //and one to allow the server to gracefully exit
-    //*cmd = "first";
-    for (;;) {
-        fgets(cmd, 100, stdin);
-        //scanf("%s", &cmd);
-        cmd[strlen(cmd) - 1] = '\0';
-        if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
-            puts("Connection Closed.");
-            return (EXIT_SUCCESS);
-        } else if (strcmp(cmd, "first") != 0) {
-            puts("Invalid Command.");
+            /* Block until receive message from a client */
+            if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
+                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
+                dieWithError("recvfrom() failed");
+
         }
+    } else if (processID == 0) {
+        //and one to allow the server to gracefully exit
+        //*cmd = "first";
+        for (;;) {
+            fgets(cmd, 100, stdin);
+            //scanf("%s", &cmd);
+            cmd[strlen(cmd) - 1] = '\0';
+            if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
+                puts("Connection Closed.");
+                return (EXIT_SUCCESS);
+            } else if (strcmp(cmd, "first") != 0) {
+                puts("Invalid Command.");
+            }
+        }
+    } else { //bad fork
+        dieWithError("fork() failed");
     }
-
+    
     return (EXIT_SUCCESS);
 }
 
