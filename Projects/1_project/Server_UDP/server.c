@@ -119,9 +119,9 @@ int main(int argc, char** argv) {
 
             /* Block until receive message from a client */
             if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
-                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
+                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0) {
                 dieWithError("recvfrom() failed");
-
+            }
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
     } else { //bad fork
         dieWithError("fork() failed");
     }
-    
+
     return (EXIT_SUCCESS);
 }
 
