@@ -65,11 +65,11 @@ int main(int argc, char** argv) {
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
     struct sockaddr_in theServerAddress; /* Local address */
+    struct sockaddr_in theClientAddress; /* Client address */
+    
     ClientMessage currentMessage;
-
     pid_t processID;
 
-    struct sockaddr_in echoClntAddr; /* Client address */
     unsigned int cliAddrLen; /* Length of incoming message */
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
     int recvMsgSize; /* Size of received message */
@@ -116,11 +116,11 @@ int main(int argc, char** argv) {
     if ((processID = fork()) > 0) { //parent process
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
-            cliAddrLen = sizeof (echoClntAddr);
+            cliAddrLen = sizeof (theClientAddress);
 
             /* Block until receive message from a client */
             if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
-                    (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0) {
+                    (struct sockaddr *) &theClientAddress, &cliAddrLen)) < 0) {
                 dieWithError("recvfrom() failed");
             }
         }
@@ -130,15 +130,18 @@ int main(int argc, char** argv) {
         //puts();
         for (;;) {
             fgets(cmd, 100, stdin);
-            //scanf("%s", &cmd);
             cmd[strlen(cmd) - 1] = '\0';
+            //printf("\"%s\"\n", &cmd);
+            //printf("\"%i\"",strlen(cmd));
+            //scanf("%s", &cmd);
             if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
                 puts("Connection Closed.");
-                kill (processID, SIGTERM); //exits the program
+                kill(processID, SIGTERM); //exits the program
                 //return (EXIT_SUCCESS);
-            } else if (strcmp(cmd, "first") != 0) {
+            } else if (strcmp(cmd, "\0") != 0) {
                 puts("Invalid Command.");
             }
+            printf(">");
         }
     } else { //bad fork
         dieWithError("fork() failed");
