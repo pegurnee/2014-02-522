@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #define MESSAGE_SIZE 100 // Longest size of any message
 #define NUM_USERS 10 // number of users in the messaging system
@@ -126,13 +127,15 @@ int main(int argc, char** argv) {
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
         //*cmd = "first";
+        //puts();
         for (;;) {
             fgets(cmd, 100, stdin);
             //scanf("%s", &cmd);
             cmd[strlen(cmd) - 1] = '\0';
             if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
                 puts("Connection Closed.");
-                return (EXIT_SUCCESS);
+                kill (processID, SIGTERM); //exits the program
+                //return (EXIT_SUCCESS);
             } else if (strcmp(cmd, "first") != 0) {
                 puts("Invalid Command.");
             }
