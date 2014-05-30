@@ -126,18 +126,12 @@ int main(int argc, char** argv) {
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
-        //*cmd = "first";
-        //puts();
         for (;;) {
             fgets(cmd, 100, stdin);
             cmd[strlen(cmd) - 1] = '\0';
-            //printf("\"%s\"\n", &cmd);
-            //printf("\"%i\"",strlen(cmd));
-            //scanf("%s", &cmd);
             if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
                 puts("Connection Closed.");
                 kill(processID, SIGTERM); //exits the program
-                //return (EXIT_SUCCESS);
             } else if (strcmp(cmd, "\0") != 0) {
                 puts("Invalid Command.");
             }
