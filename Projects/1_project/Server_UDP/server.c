@@ -25,7 +25,7 @@ typedef struct {
 
     enum {
         Login, Notify, Logout
-    } message_Type; //same size as an unsigned int
+    } messageType; //same size as an unsigned int
     unsigned int ClientId; //unique client identifier
 } NotifyMessage; //an unsigned int is 32 bits = 4 bytes
 
@@ -33,7 +33,7 @@ typedef struct {
 
     enum {
         Send, Retrieve
-    } request_Type; //same size as an unsigned int 
+    } requestType; //same size as an unsigned int 
     unsigned int SenderId; //unique client identifier 
     unsigned int RecipientId; //unique client identifier 
     char message[MESSAGE_SIZE]; //text message
