@@ -18,6 +18,7 @@
 #define DEFAULT_PORT 24564 // the default port number
 #define NOTIFYMSG_TAG 'N'
 #define SERVERMSG_TAG 'S'
+#define CLIENTMSG_TAG 'C'
 
 //typedef struct sockaddr_in sockaddr_in;
 
@@ -74,8 +75,11 @@ int main(int argc, char** argv) {
     struct sockaddr_in theClientAddress; /* Client address */
 
     ClientMessage currentMessage;
+    NotifyMessage notifier;
+    ServerMessage outgoing;
     pid_t processID;
 
+    void *ptr; //used to just check what is the first bit of data
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
     int recvMsgSize; /* Size of received message */
 
@@ -118,18 +122,41 @@ int main(int argc, char** argv) {
         dieWithError("bind() failed");
     }
 
-    clientAddressLength = sizeof (theClientAddress);
     processID = fork();
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
     if (processID > 0) { //parent process
+        memset(&notifier, 0, sizeof (notifier));
+        memset(&theClientAddress, 0, sizeof (theClientAddress));
+        clientAddressLength = sizeof (theClientAddress);
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
-            /* Block until receive message from a client */
-            if ((recvMsgSize = recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
-                    (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
-                dieWithError("recvfrom() failed");
+            printf("# ");
+            recvfrom(theSocket, &ptr, sizeof (notifier), MSG_PEEK,
+                    (struct sockaddr *) &theClientAddress, &clientAddressLength);
+            switch ((int) ptr) {
+                case NOTIFYMSG_TAG:
+                    recvfrom(theSocket, &notifier, sizeof (notifier), 0,
+                            (struct sockaddr *) &theClientAddress, &clientAddressLength);
+                    printf("\n\n-NEW INCOMING MESSAGE-\n\n");
+                    printf("UserID: %i\n", notifier.clientId);
+                    break;
+                case CLIENTMSG_TAG:
+                    break;
             }
+            if ((int) ptr == NOTIFYMSG_TAG) {
+
+                printf("\n\n-NEW INCOMING MESSAGE-\n\n");
+            }
+            //            if ((recvMsgSize = recvfrom(theSocket, &notifier, sizeof (notifier), 0,
+            //                    (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
+            //                dieWithError("recvfrom() failed");
+            //            }
+            /* Block until receive message from a client */
+            //            if ((recvMsgSize = recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
+            //                    (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
+            //                dieWithError("recvfrom() failed");
+            //            }
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
