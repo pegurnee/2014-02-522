@@ -23,29 +23,29 @@ typedef struct {
 
     enum {
         Login, Notify, Logout
-    } message_Type; // same size as an unsigned int
-    unsigned int ClientId; // unique client identifier
-} NotifyMessage; // an unsigned int is 32 bits = 4 bytes
+    } message_Type; //same size as an unsigned int
+    unsigned int ClientId; //unique client identifier
+} NotifyMessage; //an unsigned int is 32 bits = 4 bytes
 
 typedef struct {
 
     enum {
         Send, Retrieve
-    } request_Type; // same size as an unsigned int 
-    unsigned int SenderId; // unique client identifier 
-    unsigned int RecipientId; // unique client identifier 
-    char message[MESSAGE_SIZE]; // text message
-} ClientMessage; // an unsigned int is 32 bits = 4 bytes 
+    } request_Type; //same size as an unsigned int 
+    unsigned int SenderId; //unique client identifier 
+    unsigned int RecipientId; //unique client identifier 
+    char message[MESSAGE_SIZE]; //text message
+} ClientMessage; //an unsigned int is 32 bits = 4 bytes 
 
 typedef struct {
 
     enum {
         New, Old, No_Message
-    } messageType; // same size as an unsigned int
+    } messageType; //same size as an unsigned int
     unsigned int SenderId; //unique client identifier 
-    unsigned int RecipientId; // unique client identifier
-    char message[MESSAGE_SIZE]; // text message
-} ServerMessage; // an unsigned int is 32 bits = 4 bytes
+    unsigned int RecipientId; //unique client identifier
+    char message[MESSAGE_SIZE]; //text message
+} ServerMessage; //an unsigned int is 32 bits = 4 bytes
 
 /*
  *
@@ -62,12 +62,13 @@ int main(int argc, char** argv) {
     char cmd[99]; //whatever the user types in after the server starts
     char pNum[5]; //used to set a user defined port
     char confirm; //used to confirm the default port
+
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
     unsigned int clientAddressLength; /* Length of incoming message */
     struct sockaddr_in theServerAddress; /* Local address */
     struct sockaddr_in theClientAddress; /* Client address */
-    
+
     ClientMessage currentMessage;
     pid_t processID;
 
@@ -111,9 +112,10 @@ int main(int argc, char** argv) {
         dieWithError("bind() failed");
     }
 
+    processID = fork();
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
-    if ((processID = fork()) > 0) { //parent process
+    if (processID > 0) { //parent process
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
             clientAddressLength = sizeof (theClientAddress);
@@ -123,8 +125,8 @@ int main(int argc, char** argv) {
                     (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
                 dieWithError("recvfrom() failed");
             }
-            
-            
+
+
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
