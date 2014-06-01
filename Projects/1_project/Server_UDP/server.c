@@ -119,10 +119,12 @@ int main(int argc, char** argv) {
             clientAddressLength = sizeof (theClientAddress);
 
             /* Block until receive message from a client */
-            if ((recvMsgSize = recvfrom(theSocket, echoBuffer, MESSAGE_SIZE, 0,
+            if ((recvMsgSize = recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
                 dieWithError("recvfrom() failed");
             }
+            
+            
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
