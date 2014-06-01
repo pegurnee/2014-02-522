@@ -16,6 +16,8 @@
 #define MESSAGE_SIZE 100 // Longest size of any message
 #define NUM_USERS 10 // number of users in the messaging system
 #define DEFAULT_PORT 24564 // the default port number
+#define NOTIFYMSG_TAG 'N'
+#define SERVERMSG_TAG 'S'
 
 //typedef struct sockaddr_in sockaddr_in;
 
@@ -83,6 +85,7 @@ int main(int argc, char** argv) {
             serverPort = DEFAULT_PORT;
         } else {
             puts("Enter 5-digit port number (between 20000-30000): ");
+            printf("> ");
             scanf("%s", pNum);
             serverPort = atoi(pNum);
         }
@@ -139,7 +142,7 @@ int main(int argc, char** argv) {
             } else if (strcmp(cmd, "\0") != 0) {
                 puts("Invalid Command.");
             }
-            printf(">");
+            printf("> ");
         }
     } else { //bad fork
         dieWithError("fork() failed");
