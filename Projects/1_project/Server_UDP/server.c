@@ -115,21 +115,18 @@ int main(int argc, char** argv) {
         dieWithError("bind() failed");
     }
 
+    clientAddressLength = sizeof (theClientAddress);
     processID = fork();
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
     if (processID > 0) { //parent process
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
-            clientAddressLength = sizeof (theClientAddress);
-
             /* Block until receive message from a client */
             if ((recvMsgSize = recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength)) < 0) {
                 dieWithError("recvfrom() failed");
             }
-
-
         }
     } else if (processID == 0) {
         //and one to allow the server to gracefully exit
