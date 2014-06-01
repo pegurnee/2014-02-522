@@ -55,15 +55,17 @@ typedef struct {
 } ServerMessage; //an unsigned int is 32 bits = 4 bytes
 
 typedef struct {
-    //struct sockaddr_in address; //the address for a client, used to 
+    struct sockaddr_in address; //the address for a client, used in all the real time work
     unsigned int clientID; //the unique user ID 
     int numMessages; //the number of messages the user has
-    
-    bool isLoggedIn; 
-    bool hasNewMessages; 
+    char *name; //the name of the user
+
+    bool isLoggedIn;
+    bool hasNewMessages;
     ServerMessage *messages; //the pointer to all of the client's messages
-    
+
 } Client;
+
 /*
  *
  */
@@ -73,12 +75,27 @@ void dieWithError(char *errorMessage) {
 }
 
 /*
+ * Used to find the index of the specific user in the given array
+ */
+int getUserIndex(Client *users, unsigned int targetID) {
+    int i;
+    for (i = 0; i < NUM_USERS; i++) {
+        if (users[i].clientID == targetID) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/*
  * 
  */
 int main(int argc, char** argv) {
     char cmd[99]; //whatever the user types in after the server starts
     char pNum[5]; //used to set a user defined port
     char confirm; //used to confirm the default port
+    int numUsers; //the current number of users
+    int userIndex; //the currently active user
 
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
@@ -86,10 +103,11 @@ int main(int argc, char** argv) {
     struct sockaddr_in theServerAddress; /* Local address */
     struct sockaddr_in theClientAddress; /* Client address */
 
-    ClientMessage currentMessage;
-    NotifyMessage notifier;
-    ServerMessage outgoing;
+    ClientMessage currentMessage; //the client message
+    NotifyMessage notifier; //the notification message
+    ServerMessage outgoing; //the server message
     pid_t processID;
+    Client *users; //the epic data structure for storing messages
 
     void *ptr; //used to just check what is the first bit of data
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
@@ -140,18 +158,27 @@ int main(int argc, char** argv) {
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
     if (processID > 0) { //parent process
+        users = calloc(NUM_USERS * sizeof (Client));
         //        memset(&notifier, 0, sizeof (notifier));
         //        memset(&theClientAddress, 0, sizeof (theClientAddress));
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
+            //used to check what type of data it is
             recvfrom(theSocket, &ptr, sizeof (notifier), MSG_PEEK,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength);
             switch ((int) ptr) {
                 case NOTIFYMSG_TAG:
                     recvfrom(theSocket, &notifier, sizeof (notifier), 0,
                             (struct sockaddr *) &theClientAddress, &clientAddressLength);
+                    userIndex = getUserIndex(users, notifier.clientId);
                     switch (notifier.messageType) {
                         case LOGIN:
+                            if (userIndex < 0) { //the user doesn't exist, make a new one
+
+                            } else { //
+                                users[userIndex].isLoggedIn = true;
+                                
+                            }
                             break;
                         case LOGOUT:
                             break;
