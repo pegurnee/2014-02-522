@@ -25,7 +25,7 @@ typedef struct {
     int type;
 
     enum {
-        Login, Notify, Logout
+        LOGIN, NOTIFY, LOGOUT
     } messageType; //same size as an unsigned int
     unsigned int clientId; //unique client identifier
 } NotifyMessage; //an unsigned int is 32 bits = 4 bytes
@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
 
     enum {
-        Send, Retrieve
+        SEND, VIEW
     } requestType; //same size as an unsigned int 
     unsigned int senderId; //unique client identifier 
     unsigned int recipientId; //unique client identifier 
@@ -44,7 +44,7 @@ typedef struct {
     int type;
 
     enum {
-        New, Old, No_Message
+        NEW, OLD, NO_MESSAGE
     } messageType; //same size as an unsigned int
     unsigned int senderId; //unique client identifier 
     unsigned int recipientId; //unique client identifier
@@ -81,12 +81,13 @@ int main(int argc, char** argv) {
 
     //check parameters, just port number, defaults to 24564
     if (argc != 2) {
-        printf("Use default port (24564)? [y/n]: ");
+        puts("# Use default port (24564)? [y/n]:");
+        printf("> ");
         confirm = getchar();
         if (confirm == 'Y' || confirm == 'y') {
             serverPort = DEFAULT_PORT;
         } else {
-            puts("Enter 5-digit port number (between 20000-30000): ");
+            puts("# Enter 5-digit port number (between 20000-30000):");
             printf("> ");
             scanf("%s", pNum);
             serverPort = atoi(pNum);
@@ -95,7 +96,7 @@ int main(int argc, char** argv) {
         serverPort = atoi(argv[1]);
     }
 
-    printf("Using port %i.\n", serverPort);
+    printf("# Using port %i.\n", serverPort);
 
     //create socket
     if ((theSocket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
@@ -136,10 +137,12 @@ int main(int argc, char** argv) {
             fgets(cmd, 100, stdin);
             cmd[strlen(cmd) - 1] = '\0';
             if (strcmp(cmd, "exit") == 0 || strcmp(cmd, "logout") == 0) {
-                puts("Connection Closed.");
+                puts("# Connection Closed.");
                 kill(processID, SIGTERM); //exits the program
+            } else if (strcmp(cmd, "help") == 0 || strcmp(cmd, "?") == 0) {
+                puts("# It's working. 'exit' and 'logout' are used to quit.");
             } else if (strcmp(cmd, "\0") != 0) {
-                puts("Invalid Command.");
+                puts("# Invalid Command.");
             }
             printf("> ");
         }
