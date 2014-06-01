@@ -14,9 +14,10 @@
 #include <signal.h>
 #include <stdbool.h>
 
-#define MESSAGE_SIZE 100 // Longest size of any message
-#define NUM_USERS 10 // number of users in the messaging system
-#define DEFAULT_PORT 24564 // the default port number
+#define MESSAGE_SIZE 100 //Longest size of any message
+#define MESSAGE_LIMIT 20 //max number of messages that a user can have.
+#define NUM_USERS 10 //number of users in the messaging system
+#define DEFAULT_PORT 24564 //the default port number
 #define NOTIFYMSG_TAG 'N'
 #define SERVERMSG_TAG 'S'
 #define CLIENTMSG_TAG 'C'
@@ -174,16 +175,38 @@ int main(int argc, char** argv) {
                     switch (notifier.messageType) {
                         case LOGIN:
                             if (userIndex < 0) { //the user doesn't exist, make a new one
-
+                                if (numUsers < NUM_USERS) {
+                                    users[numUsers].clientID = notifier.clientId;
+                                    users[numUsers].numMessages = 0;
+                                    users[numUsers].hasNewMessages = false;
+                                    users[numUsers].messages = calloc(
+                                            sizeof (ServerMessage)
+                                            * MESSAGE_LIMIT);
+                                    userIndex = numUsers++;
+                                }
                             } else { //
-                                users[userIndex].isLoggedIn = true;
                                 
+                            }
+                            users[userIndex].isLoggedIn = true;
+                            users[userIndex].address = theClientAddress;
+
+                            notifier.type = NOTIFYMSG_TAG;
+                            notifier.messageType = NOTIFY;
+
+                            if (sendto(theSocket,
+                                    &notifier,
+                                    sizeof (notifier),
+                                    0,
+                                    (struct sockaddr *) &users[userIndex].address,
+                                    sizeof (users[userIndex].address))
+                                    != sizeof (notifier)) { //returns data to confirm user log in 
+                                dieWithError("sendto() sent a different number of bytes than expected");
                             }
                             break;
                         case LOGOUT:
                             break;
                     }
-                    printf("UserID: %i\n", notifier.clientId);
+                    printf("UserID: %i logged in\n", notifier.clientId);
                     break;
                 case CLIENTMSG_TAG:
                     recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
