@@ -12,6 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdbool.h>
 
 #define MESSAGE_SIZE 100 // Longest size of any message
 #define NUM_USERS 10 // number of users in the messaging system
@@ -32,6 +33,7 @@ typedef struct {
 } NotifyMessage; //an unsigned int is 32 bits = 4 bytes
 
 typedef struct {
+    int type;
 
     enum {
         SEND, VIEW
@@ -52,6 +54,16 @@ typedef struct {
     char message[MESSAGE_SIZE]; //text message
 } ServerMessage; //an unsigned int is 32 bits = 4 bytes
 
+typedef struct {
+    //struct sockaddr_in address; //the address for a client, used to 
+    unsigned int clientID; //the unique user ID 
+    int numMessages; //the number of messages the user has
+    
+    bool isLoggedIn; 
+    bool hasNewMessages; 
+    ServerMessage *messages; //the pointer to all of the client's messages
+    
+} Client;
 /*
  *
  */
@@ -122,26 +134,33 @@ int main(int argc, char** argv) {
         dieWithError("bind() failed");
     }
 
+    clientAddressLength = sizeof (theClientAddress);
+
     processID = fork();
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
     if (processID > 0) { //parent process
-        memset(&notifier, 0, sizeof (notifier));
-        memset(&theClientAddress, 0, sizeof (theClientAddress));
-        clientAddressLength = sizeof (theClientAddress);
+        //        memset(&notifier, 0, sizeof (notifier));
+        //        memset(&theClientAddress, 0, sizeof (theClientAddress));
         //one to send and receive messages (MAIN PROGRAM)
         for (;;) {
-            printf("# ");
             recvfrom(theSocket, &ptr, sizeof (notifier), MSG_PEEK,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength);
             switch ((int) ptr) {
                 case NOTIFYMSG_TAG:
                     recvfrom(theSocket, &notifier, sizeof (notifier), 0,
                             (struct sockaddr *) &theClientAddress, &clientAddressLength);
-                    printf("\n\n-NEW INCOMING MESSAGE-\n\n");
+                    switch (notifier.messageType) {
+                        case LOGIN:
+                            break;
+                        case LOGOUT:
+                            break;
+                    }
                     printf("UserID: %i\n", notifier.clientId);
                     break;
                 case CLIENTMSG_TAG:
+                    recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
+                            (struct sockaddr *) &theClientAddress, &clientAddressLength);
                     break;
             }
             if ((int) ptr == NOTIFYMSG_TAG) {
