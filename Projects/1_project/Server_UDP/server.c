@@ -78,9 +78,11 @@ void dieWithError(char *errorMessage) {
 /*
  * Used to find the index of the specific user in the given array
  */
-int getUserIndex(Client *users, unsigned int targetID) {
+int getUserIndex(Client *users, int curUsers, unsigned int targetID) {
+    //    puts("here");
     int i;
-    for (i = 0; i < NUM_USERS; i++) {
+    for (i = 0; i < curUsers; i++) {
+        //        printf("Round %i\nTargetID: %i\n", i, targetID);
         if (users[i].clientID == targetID) {
             return i;
         }
@@ -95,8 +97,8 @@ int main(int argc, char** argv) {
     char cmd[99]; //whatever the user types in after the server starts
     char pNum[5]; //used to set a user defined port
     char confirm; //used to confirm the default port
-    int numUsers; //the current number of users
     int userIndex; //the currently active user
+    int numUsers = 0; //the current number of users
 
     unsigned short serverPort; /* Server port */
     int theSocket; /* Socket */
@@ -109,7 +111,9 @@ int main(int argc, char** argv) {
     ServerMessage outgoing; //the server message
     pid_t processID;
     Client *users; //the epic data structure for storing messages
-
+//    Client userData[NUM_USERS];
+//    users = userData;
+    
     void *ptr; //used to just check what is the first bit of data
     char echoBuffer[MESSAGE_SIZE]; /* Buffer for echo string */
     int recvMsgSize; /* Size of received message */
@@ -154,12 +158,19 @@ int main(int argc, char** argv) {
     }
 
     clientAddressLength = sizeof (theClientAddress);
+    //    users = (Client*) calloc(NUM_USERS, sizeof (Client));
+    users = (Client*) malloc(NUM_USERS * sizeof (Client));
+
+    //     int   *users = calloc(sizeof(Client), NUM_USERS);
 
     processID = fork();
     //main looping
     //needs THREE threads, one to maintain the login and notifications thereof
     if (processID > 0) { //parent process
-        users = calloc(NUM_USERS * sizeof (Client));
+        //        Client *users = malloc(NUM_USERS * sizeof (Client));
+        //        Client *
+
+        //        printf("NumUsers: %i\nSize: %lu\nTotal: %lu\n", NUM_USERS, sizeof (Client), sizeof (*users));
         //        memset(&notifier, 0, sizeof (notifier));
         //        memset(&theClientAddress, 0, sizeof (theClientAddress));
         //one to send and receive messages (MAIN PROGRAM)
@@ -171,42 +182,66 @@ int main(int argc, char** argv) {
                 case NOTIFYMSG_TAG:
                     recvfrom(theSocket, &notifier, sizeof (notifier), 0,
                             (struct sockaddr *) &theClientAddress, &clientAddressLength);
-                    userIndex = getUserIndex(users, notifier.clientId);
+                    userIndex = getUserIndex(users, numUsers, notifier.clientId);
+                    //                    users = realloc(users, sizeof(Client) * NUM_USERS);
                     switch (notifier.messageType) {
                         case LOGIN:
                             if (userIndex < 0) { //the user doesn't exist, make a new one
                                 if (numUsers < NUM_USERS) {
+                                    puts("moar fuck");
+
+                                    printf("%i\n", users[0].clientID);
+                                    //printf("Test: %i\n", users[numUsers].clientID);
                                     users[numUsers].clientID = notifier.clientId;
+                                    puts("fuck");
+
                                     users[numUsers].numMessages = 0;
                                     users[numUsers].hasNewMessages = false;
-                                    users[numUsers].messages = calloc(
-                                            sizeof (ServerMessage)
-                                            * MESSAGE_LIMIT);
+                                    users[numUsers].messages = calloc(MESSAGE_LIMIT, sizeof (ServerMessage));
                                     userIndex = numUsers++;
                                 }
-                            } else { //
-                                
                             }
+                            /*
+
                             users[userIndex].isLoggedIn = true;
                             users[userIndex].address = theClientAddress;
 
                             notifier.type = NOTIFYMSG_TAG;
                             notifier.messageType = NOTIFY;
 
+                            //returns data to confirm user log in 
                             if (sendto(theSocket,
-                                    &notifier,
-                                    sizeof (notifier),
-                                    0,
-                                    (struct sockaddr *) &users[userIndex].address,
-                                    sizeof (users[userIndex].address))
-                                    != sizeof (notifier)) { //returns data to confirm user log in 
-                                dieWithError("sendto() sent a different number of bytes than expected");
+                            &notifier,
+                            sizeof (notifier),
+                            0,
+                            (struct sockaddr *) &users[userIndex].address,
+                            sizeof (users[userIndex].address))
+                            != sizeof (notifier)) {
+                            dieWithError("sendto() sent a different number of bytes than expected");
                             }
+
+                            //if the user has new messages, sends that data to the client
+                            if (users[userIndex].hasNewMessages) {
+                            if (sendto(theSocket,
+                            &notifier,
+                            sizeof (notifier),
+                            0,
+                            (struct sockaddr *) &users[userIndex].address,
+                            sizeof (users[userIndex].address))
+                            != sizeof (notifier)) {
+                            dieWithError("sendto() sent a different number of bytes than expected");
+                            }
+                            }
+                             */
+
                             break;
                         case LOGOUT:
                             break;
+                        default:
+                            break;
                     }
                     printf("UserID: %i logged in\n", notifier.clientId);
+
                     break;
                 case CLIENTMSG_TAG:
                     recvfrom(theSocket, &currentMessage, sizeof (currentMessage), 0,
