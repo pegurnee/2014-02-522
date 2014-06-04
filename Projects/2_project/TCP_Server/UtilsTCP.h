@@ -21,7 +21,6 @@ typedef struct {
     
     bool confirm; //if needed, a boolean value to confirm or deny actions
     char data[DATA_SIZE]; //if needed, an array of chars for extra data
-    
 } Message;
 
 #endif	/* UTILSTCP_H */
