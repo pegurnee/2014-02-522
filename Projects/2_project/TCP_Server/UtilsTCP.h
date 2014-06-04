@@ -23,5 +23,7 @@ typedef struct {
     char data[DATA_SIZE]; //if needed, an array of chars for extra data
 } Message;
 
+void dieWithError(char *errorMessage);
+
 #endif	/* UTILSTCP_H */
 
