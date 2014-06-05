@@ -17,15 +17,29 @@
 int main(int argc, char** argv) {
     //all my variables
     int theSocket; //the socket
-    unsigned short serverPort; /* Server port */
-    
+    unsigned short serverPort; //the server port
+    struct sockaddr_in theServerAddress; //the local address
+
     //handle command line stuff
 
     //create socket
     if ((theSocket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
         dieWithError("socket() failed");
     }
-    //bind to port
+
+    //create the address structure
+    memset(&theServerAddress, 0, sizeof (theServerAddress)); // Zero out structure
+    theServerAddress.sin_family = AF_INET; // Internet address family
+    theServerAddress.sin_addr.s_addr = htonl(INADDR_ANY); // Any incoming interface
+    theServerAddress.sin_port = htons(serverPort); // Local port
+
+    //bind() to the address
+    if (bind(theSocket,
+            (struct sockaddr *) &theServerAddress,
+            sizeof (theServerAddress))
+            < 0) {
+        dieWithError("bind() failed");
+    }
 
     //two threads, parent: server commands
     //exit/logout: safely closes down the server
