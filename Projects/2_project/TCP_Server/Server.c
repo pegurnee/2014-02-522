@@ -9,7 +9,14 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdbool.h>
 #include "UtilsTCP.h"
+
+typedef struct {
+    unsigned int clientID; //the user's id
+    struct sockaddr_in address; //the address for a client, used in all the real time work
+    bool loggedIn; //if the user is logged in
+} Client;
 
 /*
  * 
@@ -19,6 +26,7 @@ int main(int argc, char** argv) {
     int theSocket; //the socket
     unsigned short serverPort; //the server port
     struct sockaddr_in theServerAddress; //the local address
+    Client *users;
 
     //handle command line stuff
 
