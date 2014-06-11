@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
 
     //structures
     Message incoming; //incoming message
+    Message outgoing; //outgoing message
     Client *users; //all the users
     pid_t processID; //the child process ID
 
@@ -66,15 +67,37 @@ int main(int argc, char** argv) {
         //say: says a global message from the server
     } else if (processID == 0) { //child: sever operation, mainly just retrieving and responding to messages
         users = calloc(userLimit, sizeof (Client)); //memmory for data structure
-
+        int i; //for loops (which are primarily for-loops)
+        memset(&incoming, 0, sizeof (incoming)); //memory
+        memset(&outgoing, 0, sizeof (outgoing)); //memory
+        outgoing.senderID = SERVER_ID;
+        
         for (;;) {
-            //just the tag
             recvfrom(theSocket, &incoming, sizeof (incoming), 0,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength);
             switch (incoming.type) {
                 case TAG_LOGIN:
                     //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
-                    
+
+                    //sends message to all users that the new user logged in
+                    for (i = 0; i < numUsers; i++) {
+                        if (users[i].isLoggedIn) {
+                            outgoing.senderID = 0;
+                            
+                        }
+                    }
+                    userIndex = getUserIndex(incoming.senderID, numUsers, users);
+                    if (userIndex >= 0) {
+                        users[userIndex].isLoggedIn = true;
+                        users[userIndex].address = theClientAddress;
+                        //sends who result to newly logged in user
+                    } else {
+                        userIndex = numUsers;
+                        if (numUsers == userLimit) {
+
+                        }
+                    }
+
                     break;
                 case TAG_LOGOUT:
                     //LOGOUT, removes the user from the list of logged out users, sends a message to each other user that the user logged out
