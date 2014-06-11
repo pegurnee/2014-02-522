@@ -71,19 +71,28 @@ int main(int argc, char** argv) {
         memset(&incoming, 0, sizeof (incoming)); //memory
         memset(&outgoing, 0, sizeof (outgoing)); //memory
         outgoing.senderID = SERVER_ID;
-        
+
         for (;;) {
             recvfrom(theSocket, &incoming, sizeof (incoming), 0,
                     (struct sockaddr *) &theClientAddress, &clientAddressLength);
             switch (incoming.type) {
                 case TAG_LOGIN:
                     //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
+                    outgoing.type = TAG_LOGIN; //the outgoing message type is login
+                    sprintf(outgoing.data, "# User %d has logged in.\n\0", incoming.senderID); //inserts the user id into a string to send to all the other users
 
                     //sends message to all users that the new user logged in
                     for (i = 0; i < numUsers; i++) {
                         if (users[i].isLoggedIn) {
-                            outgoing.senderID = 0;
-                            
+                            if (sendto(theSocket,
+                                    &outgoing,
+                                    sizeof (outgoing),
+                                    0,
+                                    (struct sockaddr *) users[i].address,
+                                    sizeof (users[i].address))
+                                    != sizeof (outgoing)) {
+                                dieWithError("sendto() sent a different number of bytes than expected");
+                            }
                         }
                     }
                     userIndex = getUserIndex(incoming.senderID, numUsers, users);
