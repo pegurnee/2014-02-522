@@ -11,13 +11,9 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 #include "UtilsTCP.h"
-
-typedef struct {
-    unsigned int clientID; //the user's id
-    struct sockaddr_in address; //the address for a client, used in all the real time work
-    bool loggedIn; //if the user is logged in
-} Client;
+#include "UtilsServer.h"
 
 /*
  * 
@@ -26,8 +22,19 @@ int main(int argc, char** argv) {
     //all my variables
     int theSocket; //the socket
     unsigned short serverPort; //the server port
+    int numUsers = 0; //current number of users
+    int userLimit = 10; //the user limit, will adjust when needed
+    int userIndex; //used when addressing users in the data structure
+
+    //structures
+    Message incoming; //incoming message
+    Client *users; //all the users
+    pid_t processID; //the child process ID
+
+    //address variables
     struct sockaddr_in theServerAddress; //the local address
-    Client *users;
+    struct sockaddr_in theClientAddress; //the client address
+    unsigned int clientAddressLength = sizeof (theClientAddress); //length of the client address
 
     //handle command line stuff
 
@@ -50,17 +57,42 @@ int main(int argc, char** argv) {
         dieWithError("bind() failed");
     }
 
-    //two threads, parent: server commands
-    //exit/logout: safely closes down the server
-    //who: displays on the server the current users logged in
-    //say: says a global message from the server
+    processID = fork();
 
-    //child: sever operation, mainly just retrieving and responding to messages
-    //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
-    //LOGOUT, removes the user from the list of logged out users, sends a message to each other user that the user logged out
-    //WHO, returns to the user a list of all of the currently logged in users
-    //TALK, sends a request to start talking with a user
+    //two threads, 
+    if (processID > 0) { //parent: server commands
+        //exit/logout: safely closes down the server
+        //who: displays on the server the current users logged in
+        //say: says a global message from the server
+    } else if (processID == 0) { //child: sever operation, mainly just retrieving and responding to messages
+        users = calloc(userLimit, sizeof (Client)); //memmory for data structure
 
+        for (;;) {
+            //just the tag
+            recvfrom(theSocket, &incoming, sizeof (incoming), 0,
+                    (struct sockaddr *) &theClientAddress, &clientAddressLength);
+            switch (incoming.type) {
+                case TAG_LOGIN:
+                    //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
+                    
+                    break;
+                case TAG_LOGOUT:
+                    //LOGOUT, removes the user from the list of logged out users, sends a message to each other user that the user logged out
+                    break;
+                case TAG_WHO:
+                    //WHO, returns to the user a list of all of the currently logged in users
+                    break;
+                case TAG_TALK:
+                    //TALK, sends a request to start talking with a user
+                    break;
+                default:
+                    //not gonna happen
+                    break;
+            }
+        }
+    } else { //forking() no good
+        dieWithError("fork() failed");
+    }
     return (EXIT_SUCCESS);
 }
 
