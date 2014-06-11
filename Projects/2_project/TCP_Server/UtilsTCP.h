@@ -14,6 +14,7 @@
 #define TAG_WHO 'W'
 #define TAG_TALK 'T'
 #define DATA_SIZE 20
+#define USER_PROMPT printf("> ")
 
 typedef struct {
     int type; //the type of message to be sent
