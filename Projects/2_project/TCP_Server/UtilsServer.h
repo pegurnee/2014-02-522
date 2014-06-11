@@ -12,6 +12,7 @@
 #define	UTILSSERVER_H
 
 #define SERVER_ID 0 //the server's id is 0
+#define INCREMENT_USERS 10 //add this many more users any time limit is reached
 
 typedef struct {
     unsigned int clientID; //the user's id
