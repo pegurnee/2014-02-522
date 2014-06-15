@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
                 case TAG_LOGIN:
                     //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
                     outgoing.type = TAG_LOGIN; //the outgoing message type is login
-                    sprintf(outgoing.data, "# User %d has logged in.\n\0", incoming.senderID); //inserts the user id into a string to send to all the other users
+                    sprintf(outgoing.data, "# User %d has logged in.\n", incoming.senderID); //inserts the user id into a string to send to all the other users
 
                     //sends message to all users that the new user logged in
                     for (i = 0; i < numUsers; i++) {
@@ -88,13 +88,14 @@ int main(int argc, char** argv) {
                                     &outgoing,
                                     sizeof (outgoing),
                                     0,
-                                    (struct sockaddr *) users[i].address,
+                                    (struct sockaddr *) &users[i].address,
                                     sizeof (users[i].address))
                                     != sizeof (outgoing)) {
                                 dieWithError("sendto() sent a different number of bytes than expected");
                             }
                         }
                     }
+                    
                     userIndex = getUserIndex(incoming.senderID, numUsers, users);
                     if (userIndex >= 0) {
                         users[userIndex].isLoggedIn = true;
