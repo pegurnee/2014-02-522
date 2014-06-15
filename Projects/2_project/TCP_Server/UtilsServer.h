@@ -18,6 +18,7 @@ typedef struct {
     unsigned int clientID; //the user's id
     struct sockaddr_in address; //the address for a client, used in all the real time work
     bool isLoggedIn; //if the user is logged in
+    bool isTalking; //if the user is in talking mode
 } Client;
 
 int getUserIndex(unsigned int id, int numUsers, Client *users); //returns the index of the user with a provided ID
