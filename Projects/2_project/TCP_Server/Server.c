@@ -79,7 +79,10 @@ int main(int argc, char** argv) {
                 case TAG_LOGIN:
                     //LOGIN, adds the user to the list of logged in users, sends a message to each other user that the user logged in
                     outgoing.type = TAG_LOGIN; //the outgoing message type is login
-                    sprintf(outgoing.data, "# User %d has logged in.\n", incoming.senderID); //inserts the user id into a string to send to all the other users
+                    outgoing.confirm = true; //the user has logged in
+                    sprintf(outgoing.data,
+                            "# User %d has logged in.\n" USER_PROMPT,
+                            incoming.senderID); //inserts the user id into a string to send to all the other users
 
                     //sends message to all users that the new user logged in
                     for (i = 0; i < numUsers; i++) {
@@ -95,22 +98,51 @@ int main(int argc, char** argv) {
                             }
                         }
                     }
-                    
-                    userIndex = getUserIndex(incoming.senderID, numUsers, users);
-                    if (userIndex >= 0) {
-                        users[userIndex].isLoggedIn = true;
-                        users[userIndex].address = theClientAddress;
-                        //sends who result to newly logged in user
-                    } else {
-                        userIndex = numUsers;
-                        if (numUsers == userLimit) {
 
+                    userIndex = getUserIndex(incoming.senderID, numUsers, users);
+                    if (userIndex < 0) { //if the user doesn't exist, set user to logged in
+                        userIndex = numUsers;
+                        //if data structure is at capacity
+                        if (numUsers == userLimit) {
+                            //increment the user limit
+                            userLimit += INCREMENT_USERS;
+                            //alloc more space
+                            users = realloc(users, sizeof (Client) * userLimit);
                         }
                     }
+                    //sets the user to logged in and sets the address
+                    users[userIndex].isLoggedIn = true;
+                    users[userIndex].address = theClientAddress;
+
+                    //sends who result to newly logged in user
 
                     break;
                 case TAG_LOGOUT:
                     //LOGOUT, removes the user from the list of logged out users, sends a message to each other user that the user logged out
+                    outgoing.type = TAG_LOGOUT; //the outgoing message type is logout
+                    outgoing.confirm = true; //the user has logged out
+                    sprintf(outgoing.data,
+                            "# User %d has logged out.\n" USER_PROMPT,
+                            incoming.senderID); //inserts the user id into a string to send to all the other users
+
+                    //sends message to all users that the new user logged out
+                    for (i = 0; i < numUsers; i++) {
+                        if (users[i].isLoggedIn) {
+                            if (sendto(theSocket,
+                                    &outgoing,
+                                    sizeof (outgoing),
+                                    0,
+                                    (struct sockaddr *) &users[i].address,
+                                    sizeof (users[i].address))
+                                    != sizeof (outgoing)) {
+                                dieWithError("sendto() sent a different number of bytes than expected");
+                            }
+                        }
+                    }
+                    
+                    userIndex = getUserIndex(incoming.senderID, numUsers, users);
+                    users[userIndex].isLoggedIn = true;
+                    
                     break;
                 case TAG_WHO:
                     //WHO, returns to the user a list of all of the currently logged in users
