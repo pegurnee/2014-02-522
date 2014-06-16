@@ -14,6 +14,7 @@
 #define TAG_WHO 'W'
 #define TAG_TALK 'T'
 #define DATA_SIZE 20
+#define DEFAULT_PORT 24564
 #define USER_PROMPT printf("> ")
 
 typedef struct {
