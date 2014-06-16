@@ -139,13 +139,46 @@ int main(int argc, char** argv) {
                             }
                         }
                     }
-                    
+
                     userIndex = getUserIndex(incoming.senderID, numUsers, users);
                     users[userIndex].isLoggedIn = true;
-                    
+
                     break;
                 case TAG_WHO:
                     //WHO, returns to the user a list of all of the currently logged in users
+
+                    outgoing.type = TAG_WHO; //the outgoing message type is logout
+                    outgoing.confirm = true; //the user has logged out
+                    sprintf(outgoing.data,
+                            "# User: %d\n",
+                            incoming.senderID); //inserts the user id into a string to send to all the other users
+
+                    //sends message to all users that the new user logged in
+                    for (i = 0; i < numUsers; i++) {
+                        if (users[i].isLoggedIn) {
+                            if (sendto(theSocket,
+                                    &outgoing,
+                                    sizeof (outgoing),
+                                    0,
+                                    (struct sockaddr *) theClientAddress,
+                                    sizeof (theClientAddress))
+                                    != sizeof (outgoing)) {
+                                dieWithError("sendto() sent a different number of bytes than expected");
+                            }
+                        }
+                    }
+
+                    //after all logged in user ids are delivered, send exit message
+                    outgoing.confirm = false; //the user has logged out
+                    if (sendto(theSocket,
+                            &outgoing,
+                            sizeof (outgoing),
+                            0,
+                            (struct sockaddr *) theClientAddress,
+                            sizeof (theClientAddress))
+                            != sizeof (outgoing)) {
+                        dieWithError("sendto() sent a different number of bytes than expected");
+                    }
                     break;
                 case TAG_TALK:
                     //TALK, sends a request to start talking with a user
