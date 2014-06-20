@@ -4,6 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>UtilsServer.h</itemPath>
+      <itemPath>UtilsTCP.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -13,6 +15,8 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>Server.c</itemPath>
+      <itemPath>UtilsServer.c</itemPath>
+      <itemPath>UtilsTCP.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -38,6 +42,14 @@
       </compileType>
       <item path="Server.c" ex="false" tool="0" flavor2="0">
       </item>
+      <item path="UtilsServer.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="UtilsServer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="UtilsTCP.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="UtilsTCP.h" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -60,6 +72,14 @@
         </asmTool>
       </compileType>
       <item path="Server.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="UtilsServer.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="UtilsServer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="UtilsTCP.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="UtilsTCP.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

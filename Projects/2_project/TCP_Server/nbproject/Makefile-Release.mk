@@ -35,7 +35,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Server.o
+	${OBJECTDIR}/Server.o \
+	${OBJECTDIR}/UtilsServer.o \
+	${OBJECTDIR}/UtilsTCP.o
 
 
 # C Compiler Flags
@@ -66,6 +68,16 @@ ${OBJECTDIR}/Server.o: Server.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Server.o Server.c
+
+${OBJECTDIR}/UtilsServer.o: UtilsServer.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/UtilsServer.o UtilsServer.c
+
+${OBJECTDIR}/UtilsTCP.o: UtilsTCP.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/UtilsTCP.o UtilsTCP.c
 
 # Subprojects
 .build-subprojects:

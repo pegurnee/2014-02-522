@@ -5,8 +5,8 @@
  * Created on June 4, 2014, 4:35 PM
  */
 #include <stdbool.h>
-#include <arpa/inet.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 #ifndef UTILSTCP_H
 #define	UTILSTCP_H

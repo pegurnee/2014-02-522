@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/883621200/UtilsTCP.o \
 	${OBJECTDIR}/Client.o
 
 
@@ -61,6 +62,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tcp_client: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tcp_client ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/_ext/883621200/UtilsTCP.o: ../TCP_Server/UtilsTCP.c 
+	${MKDIR} -p ${OBJECTDIR}/_ext/883621200
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/883621200/UtilsTCP.o ../TCP_Server/UtilsTCP.c
 
 ${OBJECTDIR}/Client.o: Client.c 
 	${MKDIR} -p ${OBJECTDIR}
