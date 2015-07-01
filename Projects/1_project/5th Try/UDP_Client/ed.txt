@@ -1,0 +1,12 @@
+User 1234's messages:
+
+# Message 1:
+# From user: 1234
+# Ed
+
+
+# Message 2:
+# From user: 1234
+# sfvs
+
+

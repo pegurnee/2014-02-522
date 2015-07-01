@@ -26,3 +26,13 @@
 *.~lock.*
 /Projects/1_project/Server_UDP/dist/
 /Projects/1_project/Server_UDP/build/
+/Projects/1_project/Client_UDP/dist/
+/Projects/1_project/Client_UDP/build/
+/Projects/1_project/5th Try/UDP_Client/build/
+/Projects/1_project/5th Try/UDP_Client/dist/
+/Projects/1_project/5th Try/UDP_Server/build/
+/Projects/1_project/5th Try/UDP_Server/dist/
+/Projects/2_project/TCP_Server/dist/
+/Projects/2_project/TCP_Server/build/
+/Projects/2_project/TCP_Client/build/
+/Projects/2_project/TCP_Client/dist/
